@@ -1,0 +1,108 @@
+<!-- extraction/templates/extraction/edit_product.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Modifier le produit</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-container { max-width: 800px; margin: 0 auto; }
+        .field-group { margin: 15px 0; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, textarea { 
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea { rows: 3; }
+        button { 
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .cancel-btn { background-color: #6c757d; }
+        .product-image { max-width: 300px; margin: 20px 0; border: 1px solid #ddd; }
+        .field-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .field-row img { max-width: 100px; margin-right: 15px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>✏️ Modifier le produit</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if product.product_image_b64 %}
+            <div>
+                <strong>Image du produit :</strong><br>
+                <img src="data:image/jpeg;base64,{{ product.product_image_b64 }}" class="product-image">
+            </div>
+            {% endif %}
+            
+            <div class="field-group">
+                <label>Nom FR :</label>
+                <input type="text" name="nom_fr" value="{{ product.nom_fr }}">
+            </div>
+            
+            <div class="field-group">
+                <label>Nom AR :</label>
+                <input type="text" name="nom_ar" value="{{ product.nom_ar }}" dir="rtl">
+            </div>
+            
+            <div class="field-group">
+                <label>Marque :</label>
+                <input type="text" name="marque" value="{{ product.marque }}">
+            </div>
+            
+            <div class="field-group">
+                <label>Prix (DT) :</label>
+                <input type="text" name="prix" value="{{ product.prix|floatformat:3 }}">
+            </div>
+            
+            <div class="field-group">
+                <label>Prix avant remise (DT) :</label>
+                <input type="text" name="prix_avant" value="{{ product.prix_avant|floatformat:3 }}">
+            </div>
+            
+            <div class="field-group">
+                <label>Description :</label>
+                <textarea name="description" rows="3">{{ product.description }}</textarea>
+            </div>
+            
+            {% if product.fields %}
+            <h3>Champs détectés par l'OCR :</h3>
+            {% for field in product.fields %}
+            <div class="field-row">
+                <img src="data:image/jpeg;base64,{{ field.image_b64 }}">
+                <div>
+                    <strong>{{ field.class_name }}:</strong><br>
+                    Valeur extraite : "{{ field.extracted_value|default:"-" }}"
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            <div style="margin-top: 20px;">
+                <button type="submit">💾 Enregistrer les modifications</button>
+                <a href="{% url 'extraction:upload_catalogue' %}">
+                    <button type="button" class="cancel-btn">❌ Annuler</button>
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

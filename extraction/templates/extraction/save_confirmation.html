@@ -1,0 +1,31 @@
+<!-- extraction/templates/extraction/save_confirmation.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Sauvegarde effectuée</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
+        .success { color: green; font-size: 24px; margin: 20px; }
+        .info { font-size: 18px; margin: 20px; }
+        .buttons { margin-top: 30px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="success">✅ Sauvegarde réussie !</div>
+    
+    <div class="info">
+        {% if all_saved %}
+            {{ saved_count }} produit(s) sur {{ total_selected }} ont été enregistrés en base de données.
+        {% else %}
+            {{ saved_count }} produit(s) sélectionné(s) ont été enregistrés en base de données.
+        {% endif %}
+    </div>
+    
+    <div class="buttons">
+        <button onclick="location.href='{% url 'extraction:upload_catalogue' %}'">📷 Nouvelle extraction</button>
+        <button onclick="location.href='{% url 'extraction:product_list' %}'">📋 Voir les produits en base</button>
+    </div>
+</body>
+</html>

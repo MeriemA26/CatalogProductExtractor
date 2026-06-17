@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Vérification des produits</title>
+    <style>
+        .product-card {
+            border: 1px solid #ccc;
+            margin: 20px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .field-image {
+            max-width: 200px;
+            margin: 5px;
+        }
+        .field-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .field-row img {
+            margin-right: 15px;
+        }
+        input, textarea {
+            padding: 5px;
+            width: 300px;
+        }
+        .correct {
+            background-color: #d4edda;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .save-btn {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vérification des produits extraits</h1>
+    <p>Vérifiez et corrigez les informations avant de les ajouter à la base.</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {% for product in products %}
+        <div class="product-card">
+            <h3>Produit {{ product.id }}</h3>
+            
+            <div class="field-row">
+                <strong>Image du produit :</strong>
+                <img src="data:image/jpeg;base64,{{ product.product_image_b64 }}" class="field-image">
+            </div>
+            
+            <div class="field-row">
+                <strong>Nom FR :</strong>
+                <input type="text" name="nom_fr_{{ product.id }}" value="{{ product.nom_fr }}" style="width: 400px;">
+            </div>
+            
+            <div class="field-row">
+                <strong>Nom AR :</strong>
+                <input type="text" name="nom_ar_{{ product.id }}" value="{{ product.nom_ar }}" style="width: 400px;" dir="rtl">
+            </div>
+            
+            <div class="field-row">
+                <strong>Marque :</strong>
+                <input type="text" name="marque_{{ product.id }}" value="{{ product.marque }}">
+            </div>
+            
+            <div class="field-row">
+                <strong>Prix (DT) :</strong>
+                <input type="text" name="prix_{{ product.id }}" value="{{ product.prix }}">
+            </div>
+            
+            <div class="field-row">
+                <strong>Prix avant remise (DT) :</strong>
+                <input type="text" name="prix_avant_{{ product.id }}" value="{{ product.prix_avant }}">
+            </div>
+            
+            <div class="field-row">
+                <strong>Description :</strong>
+                <textarea name="description_{{ product.id }}" rows="2" cols="50">{{ product.description }}</textarea>
+            </div>
+            
+            <div class="field-row">
+                <strong>Remise calculée :</strong> {{ product.remise }}
+            </div>
+            
+            <h4>Champs détectés :</h4>
+            {% for field in product.fields %}
+            <div class="field-row">
+                <img src="data:image/jpeg;base64,{{ field.image_b64 }}" class="field-image">
+                <div>
+                    <strong>{{ field.class_name }}</strong> : 
+                    <span {% if field.extracted_value %}class="correct"{% endif %}>
+                        "{{ field.extracted_value }}"
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div>
+                <label>
+                    <input type="checkbox" name="save_{{ product.id }}" checked>
+                    Ajouter ce produit à la base
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <button type="submit" class="save-btn">Enregistrer les produits sélectionnés</button>
+    </form>
+    
+    <p><a href="{% url 'upload_catalogue' %}">← Importer une nouvelle image</a></p>
+</body>
+</html>

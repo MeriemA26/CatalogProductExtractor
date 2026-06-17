@@ -1,0 +1,49 @@
+id,nom_fr,nom_ar,marque,prix,prix_avant,remise,description,created_at,catalogue_id
+355,Gel douche,جال إستحمام.,LE PETIT,50.79,350.0,85%,Le flacon de 250 mL. Existe en 600 ml à 11P1490.,2026-06-17 10:22:41.992540,1
+356,Dentifrice,معجون أسنان .,COLGATE.,4.2,5.89,29%,Le tube de 75 mI.,2026-06-17 10:22:42.005997,1
+357,Protect & Hydrate Sun,واقي شمس .,NIVEA,43.99,69.99,37%,Le flacon de 200 ml.,2026-06-17 10:22:42.017671,1
+358,Gel lavant mains,سائل غسيل,LILAS,3.99,4.0,0%,Le flacon de 500 ml.,2026-06-17 10:22:42.028008,1
+359,Shampooing,شامبو .,,4.89,,,Le flacon de 350 mI. Existe en 600 ml à 6p1200.,2026-06-17 10:22:42.036695,1
+360,Brume parfumée,عطر,PRIVÉ.,10.49,590.0,98%,Le flacon de 250 ml,2026-06-17 10:22:42.048595,1
+361,Gel douche LILAS,جال استحمام.,EXTREME.,4.29,,,Le flacon de 500 ml.,2026-06-17 10:22:42.060919,1
+362,Déodorant,مزيل رائحة .,NIVEA.,10.39,16.49,37%,Le spray de 200 ml. Existe en roll-on 707990. Existe aussi en stick à 9P1990.,2026-06-17 10:22:42.070007,1
+363,Gel lavant mains,غسيل اليدين . سائل,C'FRESH.,2.99,,,Le flacon de 350 mI.,2026-06-17 10:22:42.080200,1
+364,Savon solide,صابون .,EXTREME.,2.49,2.89,14%,Le pain de 120,2026-06-17 10:22:42.089637,1
+365,Déodorant,مزيل رائحة .,LILAS,5.29,5.89,10%,Le spray de 200 Existe en roll-on à 301390.,2026-06-17 10:22:42.100021,1
+366,Brosse à dents Clean intense,فرشاة أسنان.,LILAS.,2.69,499.0,99%,Le lot de 3,2026-06-17 10:22:42.109354,1
+367,,,,,,,,2026-06-17 10:22:42.119353,1
+368,Déodorant LILAS,مزيل رائحة .,LILAS,50.99,990.0,95%,Le spray de 150 ml,2026-06-17 10:22:42.128610,1
+369,Biscuits enrobés chocolat Binto goût,بسكويت .,KIF.,,,,Les 3,2026-06-17 10:25:16.931291,2
+370,Boisson au jus de fruits,مشروب عصير .,TROPICO.,4.92,,,Les 6,2026-06-17 10:25:16.942213,2
+371,Granola,رقائق .,GRAIN D'OR.,7.99,,,Le paquet de 300 g Existe en chocolat-banane et en chocolat-fraise,2026-06-17 10:25:16.954223,2
+372,Cookies,كوكيز .,SAÏDA.,2.25,,,Le paquet de 136 g Existe aux pépites de chocolat et en cacaoté.,2026-06-17 10:25:16.963451,2
+373,Boisson au jus,عصير مشروب,DÉLICE,2.86,380.0,99%,La brique de 1L Existe en plusieurs saveurs.,2026-06-17 10:25:16.971969,2
+374,Cookies Healthy,كوكيز,CAMPI:,2.3,,,Le paquet de 100 g Existe au multi graines et à l'avoine chia.,2026-06-17 10:25:16.980811,2
+375,Chocolat en poudre Chocoline,مسحوق شكلاطة,SAÏD.,60.65,,,a boîte de,2026-06-17 10:25:16.990518,2
+376,Boisson éneraétiaue,مشروب طاقة .,REDBULL,4.79,,,La canette de 250 mI.,2026-06-17 10:25:16.999352,2
+377,Céréales Nesquik,رقائق .,NESTLÉ.,11.99,,,Le paquet de 330,2026-06-17 10:25:17.008240,2
+378,Chamia nature,شامية .,LE MOULIN.,11.99,,,La boîte de 700 g,2026-06-17 10:25:17.017122,2
+379,Café moulu,قهوة مرحية.,GRAND'MÈRE_,10.99,,,Le paquet de 200 g,2026-06-17 10:25:17.026928,2
+380,Crème à tartiner,كريمة للطلى.,BARISTELLA.,10.99,,,Le pot de 1 Kg.,2026-06-17 10:25:17.038355,2
+381,,,,,,,,2026-06-17 10:25:17.047692,2
+382,Mayonnaise,مايونيز,BONNA.,4.19,,,Le squeezer de 270 mI.,2026-06-17 10:34:07.518412,3
+383,Thon entier à l'huile véaétale,تن كامل بالزيت النباتيء,ALJAZIA.,13.99,,,Le lot de 3,2026-06-17 10:34:07.531022,3
+384,Chips Chips-Up,شيبس .,CÉRÉALIS.,4.69,,,Le lot de 2,2026-06-17 10:34:07.540247,3
+385,Maïs doux,ذرة حلوة,EMPORIUM,3.29,,,La boîte de 184 g.,2026-06-17 10:34:07.550847,3
+386,Tomates pelées concassées au basilic,مقشرة مدششة بالحبق,LE PETIT PARIS.,6.29,,,Le lot de 3,2026-06-17 10:34:07.559521,3
+387,Champignons en tranches,شرائح فطر,DURRA.,,,,La boîte de 184 g,2026-06-17 10:34:07.570356,3
+388,Chips,شيبس .,MAD.,2.89,,,La boîte de 70 g. Existe en plusieurs saveurs,2026-06-17 10:34:07.581742,3
+389,Huile d'olive extra vierge Bio,زيت زيتون,LAH'NEYA,13.49,,,La bouteille de,2026-06-17 10:34:07.594215,3
+390,Harissa,هريسة .,EL MANAR.,3.29,,,La boîte de 380 g,2026-06-17 10:34:07.605867,3
+391,Croustilles de pommes de terre,رقائق البطاطا,La marque N% [,1.89,,,Le sachet de 75 g. Existe au sel et aux fromage et paprika goûts,2026-06-17 10:34:07.619054,3
+392,Huile de colza,زيت نباتى .,OLINA.,21.49,,,,2026-06-17 10:34:07.630791,3
+393,Huile végétale,زيت نباتي.,OLINA.,21.49,,,Le bidon de 5 L_,2026-06-17 10:34:07.641574,3
+394,Bouteille pour complément alimentaire,قارورة الرياضة للمشروبات .,,10.9,,,,2026-06-17 10:41:36.965255,4
+395,Corde à sauter:,حبل للقفز,,10.9,,,,2026-06-17 10:41:36.975358,4
+396,Ballon de foot,كرة قد .,TOPLIFE.,19.9,,,,2026-06-17 10:41:36.990491,4
+397,Paire d'haltères fitness,يدوية . أثقال,,14.9,,,,2026-06-17 10:41:37.003926,4
+398,ëpUJ rojlg Protège-tibia,لوازم رباضة,CADET.,8.9,13.8,36%,,2026-06-17 10:41:37.013566,4
+399,Ballon de football Champions League,كرة قدم.,T5.,39.9,,,,2026-06-17 10:41:37.023624,4
+400,Ballon de football Champions League,كرة قدم .,,,,,,2026-06-17 10:41:37.035385,4
+401,70 248 248 Carrefour Tunisie,,,,,,,2026-06-17 10:41:37.046506,4
+402,Protège-tibia,لوازم رباضة,CADET.,900.0,1.3,-69131%,,2026-06-17 10:41:37.060072,4

@@ -1,0 +1,283 @@
+<!-- extraction/templates/extraction/upload.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Extraction de catalogue</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; display: flex; align-items: center; gap: 10px; }
+        
+        /* Formulaire */
+        .upload-form { background: #f8f9fa; padding: 20px; border-radius: 8px; border: 2px dashed #dee2e6; margin-bottom: 20px; }
+        .form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 10px; }
+        .form-row .field-group { flex: 1; min-width: 180px; }
+        .form-row label { display: block; font-weight: bold; font-size: 13px; color: #333; margin-bottom: 4px; }
+        .form-row input, .form-row select { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .form-row input:focus, .form-row select:focus { border-color: #007bff; outline: none; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+        .upload-form button { padding: 10px 30px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        .upload-form button:hover { background: #0056b3; }
+        
+        /* Métadonnées */
+        .metadata-bar { display: flex; flex-wrap: wrap; gap: 20px; background: #e8f4fd; padding: 15px 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #007bff; }
+        .metadata-item { display: flex; align-items: center; gap: 8px; }
+        .metadata-item .label { font-weight: bold; color: #2c3e50; font-size: 13px; }
+        .metadata-item .value { color: #007bff; font-weight: bold; font-size: 14px; }
+        
+        /* Image preview */
+        .image-preview-container { margin: 20px 0; padding: 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-align: center; }
+        .image-preview-container h3 { margin-top: 0; color: #2c3e50; }
+        .image-preview { max-width: 100%; max-height: 450px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; transition: 0.3s; }
+        .image-preview:hover { transform: scale(1.01); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .image-info { margin-top: 10px; color: #6c757d; font-size: 13px; }
+        
+        /* Actions */
+        .action-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 15px 0; border-bottom: 2px solid #e9ecef; margin-bottom: 20px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .btn-save { background: #28a745; color: white; }
+        .btn-save-all { background: #17a2b8; color: white; }
+        .btn-delete { background: #dc3545; color: white; }
+        .btn-delete-all { background: #6c757d; color: white; }
+        .btn-add { background: #fd7e14; color: white; }
+        .select-all { margin-left: 15px; }
+        .selected-count { font-weight: bold; color: #007bff; margin-left: 10px; }
+        
+        /* Tableau */
+        .table-wrapper { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { background: #2c3e50; color: white; padding: 12px 8px; text-align: left; position: sticky; top: 0; z-index: 10; }
+        td { padding: 10px 8px; border-bottom: 1px solid #e9ecef; vertical-align: middle; }
+        tr:hover { background: #f8f9fa; }
+        .product-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6; }
+        .price { font-weight: bold; color: #28a745; font-size: 15px; }
+        .price-before { color: #6c757d; text-decoration: line-through; }
+        .remise { color: #dc3545; font-weight: bold; }
+        .action-cell { display: flex; gap: 5px; flex-wrap: wrap; }
+        .btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 3px; border: none; cursor: pointer; text-decoration: none; }
+        .btn-edit { background: #ffc107; color: #333; }
+        .btn-del { background: #dc3545; color: white; }
+        
+        /* Stats */
+        .stats { display: flex; gap: 20px; padding: 10px 0; color: #6c757d; font-size: 14px; flex-wrap: wrap; }
+        .stats span { font-weight: bold; color: #2c3e50; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .action-bar { flex-direction: column; align-items: stretch; }
+            .action-bar .btn { text-align: center; }
+            table { font-size: 12px; }
+            th, td { padding: 6px 4px; }
+            .product-thumb { width: 40px; height: 40px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📷 Extraction de catalogue</h1>
+    
+    <!-- FORMULAIRE UPLOAD AVEC MÉTADONNÉES -->
+    <div class="upload-form">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="field-group">
+                    <label for="{{ form.enseigne.id_for_label }}">{{ form.enseigne.label }}</label>
+                    {{ form.enseigne }}
+                </div>
+                <div class="field-group" id="enseigne_autre_group" style="display:none;">
+                    <label for="{{ form.enseigne_autre.id_for_label }}">{{ form.enseigne_autre.label }}</label>
+                    {{ form.enseigne_autre }}
+                </div>
+                <div class="field-group">
+                    <label for="{{ form.date_debut.id_for_label }}">{{ form.date_debut.label }}</label>
+                    {{ form.date_debut }}
+                </div>
+                <div class="field-group">
+                    <label for="{{ form.date_fin.id_for_label }}">{{ form.date_fin.label }}</label>
+                    {{ form.date_fin }}
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="field-group" style="flex:2;">
+                    <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+                    {{ form.image }}
+                    <small style="color:#6c757d; display:block; margin-top:4px;">{{ form.image.help_text }}</small>
+                </div>
+                <div class="field-group" style="flex:0 0 auto; display: flex; align-items: flex-end;">
+                    <button type="submit">🔍 Analyser l'image</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- MÉTADONNÉES DU CATALOGUE -->
+    {% if metadata %}
+    <div class="metadata-bar">
+        <div class="metadata-item">
+            <span class="label">🆔 ID Catalogue :</span>
+            <span class="value">{{ metadata.id }}</span>
+        </div>
+        <div class="metadata-item">
+            <span class="label">🏪 Enseigne :</span>
+            <span class="value">{{ metadata.enseigne }}</span>
+        </div>
+        <div class="metadata-item">
+            <span class="label">📅 Période :</span>
+            <span class="value">{{ metadata.date_debut }} → {{ metadata.date_fin }}</span>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- IMAGE UPLODÉE -->
+    {% if uploaded_image_base64 %}
+    <div class="image-preview-container">
+        <h3>🖼️ Image analysée</h3>
+        <img src="data:image/jpeg;base64,{{ uploaded_image_base64 }}" 
+             alt="Image uplodée" 
+             class="image-preview"
+             onclick="window.open(this.src, '_blank')"
+             title="Cliquez pour agrandir">
+        <div class="image-info">📸 Cliquez sur l'image pour l'agrandir</div>
+    </div>
+    {% endif %}
+    
+    <!-- RÉSULTATS -->
+    {% if products %}
+    <hr>
+    
+    <div class="stats">
+        📦 <span>{{ products|length }}</span> produit(s) détecté(s)
+        {% if metadata %}
+        • 🏪 <span>{{ metadata.enseigne }}</span>
+        • 📅 <span>{{ metadata.date_debut }} → {{ metadata.date_fin }}</span>
+        {% endif %}
+    </div>
+    
+    <form method="post" id="productsForm">
+        {% csrf_token %}
+        <div class="action-bar">
+            <a href="{% url 'extraction:add_product' %}" class="btn btn-add">➕ Ajouter</a>
+            <button type="submit" formaction="{% url 'extraction:save_selected_products' %}" class="btn btn-save">💾 Sauvegarder sélectionnés</button>
+            <button type="submit" formaction="{% url 'extraction:save_all_products' %}" class="btn btn-save-all">💾 Sauvegarder TOUS</button>
+            <button type="submit" formaction="{% url 'extraction:delete_selected_products' %}" class="btn btn-delete" 
+                    onclick="return confirm('Supprimer les produits sélectionnés ?')">🗑️ Supprimer sélectionnés</button>
+            <button type="submit" formaction="{% url 'extraction:delete_all_products' %}" class="btn btn-delete-all" 
+                    onclick="return confirm('⚠️ Supprimer TOUS les produits ?')">🗑️ Supprimer TOUS</button>
+            
+            <label class="select-all">
+                <input type="checkbox" id="selectAllCheckbox"> Tout sélectionner
+            </label>
+            <span class="selected-count" id="selectedCount">0 sélectionné(s)</span>
+        </div>
+    
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:40px;"><input type="checkbox" id="headerCheckbox"></th>
+                        <th style="width:70px;">Image</th>
+                        <th>Nom FR</th>
+                        <th>Nom AR</th>
+                        <th>Marque</th>
+                        <th style="width:100px;">Prix</th>
+                        <th style="width:100px;">Prix avant</th>
+                        <th style="width:70px;">Remise</th>
+                        <th>Description</th>
+                        <th style="width:120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td><input type="checkbox" name="selected_products" value="{{ product.id }}" class="product-checkbox"></td>
+                        <td>
+                            {% if product.product_image_b64 %}
+                            <img src="data:image/jpeg;base64,{{ product.product_image_b64 }}" class="product-thumb" title="Produit {{ product.id }}">
+                            {% else %}
+                            <span style="color:#ccc;">—</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.nom_fr|default:"—"|truncatechars:35 }}</td>
+                        <td dir="rtl">{{ product.nom_ar|default:"—"|truncatechars:25 }}</td>
+                        <td>{{ product.marque|default:"—" }}</td>
+                        <td class="price">{{ product.prix|floatformat:3|default:"—" }}</td>
+                        <td class="price-before">{{ product.prix_avant|floatformat:3|default:"—" }}</td>
+                        <td class="remise">{{ product.remise|default:"—" }}</td>
+                        <td>{{ product.description|default:"—"|truncatechars:50 }}</td>
+                        <td>
+                            <div class="action-cell">
+                                <a href="{% url 'extraction:edit_product' product.id %}" class="btn-sm btn-edit">✏️</a>
+                                <a href="{% url 'extraction:delete_product' product.id %}" 
+                                   class="btn-sm btn-del" 
+                                   onclick="return confirm('Supprimer ce produit ?')">🗑️</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+    
+    <p style="color:#6c757d; font-size:13px; margin-top:15px;">
+        💡 Astuce : Cochez les produits à sauvegarder ou supprimer, puis utilisez les boutons d'action.
+    </p>
+    {% endif %}
+</div>
+
+<script>
+    // Gestion des cases à cocher
+    const headerCheckbox = document.getElementById('headerCheckbox');
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    const selectedCountSpan = document.getElementById('selectedCount');
+    
+    function updateSelectedCount() {
+        const checked = document.querySelectorAll('.product-checkbox:checked').length;
+        selectedCountSpan.textContent = `${checked} sélectionné(s)`;
+        const allChecked = checked === productCheckboxes.length && productCheckboxes.length > 0;
+        if (headerCheckbox) headerCheckbox.checked = allChecked;
+        if (selectAllCheckbox) selectAllCheckbox.checked = allChecked;
+    }
+    
+    function selectAll(checked) {
+        productCheckboxes.forEach(cb => cb.checked = checked);
+        updateSelectedCount();
+    }
+    
+    if (headerCheckbox) {
+        headerCheckbox.addEventListener('change', (e) => selectAll(e.target.checked));
+    }
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', (e) => selectAll(e.target.checked));
+    }
+    productCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateSelectedCount);
+    });
+    updateSelectedCount();
+    
+    // Gestion du champ "Autre" pour l'enseigne
+    const enseigneSelect = document.querySelector('#{{ form.enseigne.id_for_label }}');
+    const enseigneAutreGroup = document.getElementById('enseigne_autre_group');
+    const enseigneAutreInput = document.querySelector('#{{ form.enseigne_autre.id_for_label }}');
+    
+    if (enseigneSelect) {
+        enseigneSelect.addEventListener('change', function() {
+            if (this.value === 'autre') {
+                enseigneAutreGroup.style.display = 'block';
+                enseigneAutreInput.required = true;
+            } else {
+                enseigneAutreGroup.style.display = 'none';
+                enseigneAutreInput.required = false;
+                enseigneAutreInput.value = '';
+            }
+        });
+    }
+</script>
+</body>
+</html>

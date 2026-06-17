@@ -1,0 +1,68 @@
+<!-- extraction/templates/extraction/catalogue_detail.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Détail du catalogue</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #f5f7fa; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-info { background: #e8f4fd; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #007bff; }
+        .header-info .item { display: inline-block; margin-right: 30px; }
+        .header-info .label { font-weight: bold; color: #6c757d; }
+        .header-info .value { color: #2c3e50; font-weight: bold; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #2c3e50; color: white; }
+        .back-link { display: inline-block; margin: 10px 0; color: #007bff; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📋 Détail du catalogue</h1>
+    
+    <a href="{% url 'extraction:product_list' %}" class="back-link">← Retour à la liste</a>
+    
+    <div class="header-info">
+        <span class="item"><span class="label">🏪 Enseigne :</span> <span class="value">{{ catalogue.get_enseigne_display_name }}</span></span>
+        <span class="item"><span class="label">📅 Période :</span> <span class="value">{{ catalogue.date_debut|date:"d/m/Y" }} → {{ catalogue.date_fin|date:"d/m/Y" }}</span></span>
+        <span class="item"><span class="label">📦 Produits :</span> <span class="value">{{ total }}</span></span>
+        <span class="item"><span class="label">📅 Importé le :</span> <span class="value">{{ catalogue.date_upload|date:"d/m/Y H:i" }}</span></span>
+    </div>
+    
+    {% if products %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom FR</th>
+                <th>Nom AR</th>
+                <th>Marque</th>
+                <th>Prix (DT)</th>
+                <th>Prix avant</th>
+                <th>Remise</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.nom_fr|default:"-" }}</td>
+                <td dir="rtl">{{ p.nom_ar|default:"-" }}</td>
+                <td>{{ p.marque|default:"-" }}</td>
+                <td><strong>{{ p.prix|floatformat:3|default:"-" }}</strong></td>
+                <td>{{ p.prix_avant|floatformat:3|default:"-" }}</td>
+                <td>{{ p.remise|default:"-" }}</td>
+                <td>{{ p.description|default:"-"|truncatechars:50 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun produit dans ce catalogue.</p>
+    {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!-- extraction/templates/extraction/product_list.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Produits extraits</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #f5f7fa; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #2c3e50; color: white; position: sticky; top: 0; }
+        .catalogues-list { display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0; }
+        .catalogue-card { 
+            background: #e8f4fd; 
+            padding: 12px 18px; 
+            border-radius: 8px; 
+            border-left: 4px solid #007bff;
+            flex: 1;
+            min-width: 200px;
+        }
+        .catalogue-card .label { font-weight: bold; color: #6c757d; }
+        .catalogue-card .value { color: #2c3e50; }
+        .catalogue-card .count { 
+            background: #007bff; 
+            color: white; 
+            padding: 2px 10px; 
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .back-link { display: inline-block; margin: 10px 0; color: #007bff; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        .stats-bar { display: flex; gap: 20px; flex-wrap: wrap; padding: 10px 0; border-bottom: 1px solid #eee; margin-bottom: 15px; }
+        .stats-bar .item { background: #f8f9fa; padding: 8px 15px; border-radius: 6px; }
+        .stats-bar .label { font-weight: bold; color: #6c757d; }
+        .stats-bar .value { color: #2c3e50; }
+        .catalogue-section {
+            margin: 20px 0;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .catalogue-header {
+            background: #e8f4fd;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .catalogue-header:hover { background: #d4e8f7; }
+        .catalogue-header .info { display: flex; gap: 20px; flex-wrap: wrap; }
+        .catalogue-header .info .item { display: flex; gap: 5px; align-items: center; }
+        .catalogue-header .info .label { font-weight: bold; color: #6c757d; }
+        .catalogue-header .info .value { color: #2c3e50; }
+        .catalogue-body { padding: 15px; overflow-x: auto; }
+        .catalogue-body table { margin-top: 0; }
+        .toggle-icon { font-size: 18px; transition: 0.3s; }
+        .toggle-icon.collapsed { transform: rotate(-90deg); }
+        .view-detail-link { color: #007bff; text-decoration: none; }
+        .view-detail-link:hover { text-decoration: underline; }
+        .highlight { background-color: #fff3cd; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📦 Gestion des catalogues</h1>
+    
+    <p><a href="{% url 'extraction:upload_catalogue' %}" class="back-link">← Importer un nouveau catalogue</a></p>
+    
+    <!-- STATS -->
+    <div class="stats-bar">
+        <div class="item"><span class="label">📚 Catalogues :</span> <span class="value">{{ total_catalogues }}</span></div>
+        <div class="item"><span class="label">📦 Produits :</span> <span class="value">{{ total_products }}</span></div>
+    </div>
+    
+    <!-- LISTE DES CATALOGUES UNIQUES -->
+    <h2>📚 Catalogues importés</h2>
+    <div class="catalogues-list">
+        {% for group in grouped_catalogues %}
+        <div class="catalogue-card">
+            <div><span class="label">🏪</span> <span class="value">{{ group.enseigne }}</span></div>
+            <div><span class="label">📅</span> <span class="value">{{ group.date_debut|date:"d/m/Y" }} → {{ group.date_fin|date:"d/m/Y" }}</span></div>
+            <div>
+                <span class="label">📦</span> <span class="value">{{ group.total_products }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <p>Aucun catalogue importé.</p>
+        {% endfor %}
+    </div>
+    
+    <!-- TOUS LES PRODUITS GROUPÉS PAR CATALOGUE UNIQUE -->
+    <h2>📦 Tous les produits</h2>
+    
+    {% if grouped_catalogues %}
+        {% for group in grouped_catalogues %}
+        <div class="catalogue-section">
+            <div class="catalogue-header" onclick="toggleCatalogue(this)">
+                <div class="info">
+                    <span class="item">
+                        <span class="label">🏪</span>
+                        <span class="value">{{ group.enseigne }}</span>
+                    </span>
+                    <span class="item">
+                        <span class="label">📅</span>
+                        <span class="value">{{ group.date_debut|date:"d/m/Y" }} → {{ group.date_fin|date:"d/m/Y" }}</span>
+                    </span>
+                    <span class="item">
+                        <span class="label">📦</span>
+                        <span class="value">{{ group.total_products }} produits</span>
+                    </span>
+                </div>
+                <span class="toggle-icon" id="toggleIcon{{ forloop.counter }}">▼</span>
+            </div>
+            <div class="catalogue-body" id="catalogueBody{{ forloop.counter }}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom FR</th>
+                            <th>Nom AR</th>
+                            <th>Marque</th>
+                            <th>Prix (DT)</th>
+                            <th>Prix avant</th>
+                            <th>Remise</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in products %}
+                            {% if p.catalogue.enseigne == group.enseigne and p.catalogue.date_debut == group.date_debut and p.catalogue.date_fin == group.date_fin %}
+                            <tr>
+                                <td>{{ p.id }}</td>
+                                <td>{{ p.nom_fr|default:"-"|truncatechars:30 }}</td>
+                                <td dir="rtl">{{ p.nom_ar|default:"-"|truncatechars:20 }}</td>
+                                <td>{{ p.marque|default:"-" }}</td>
+                                <td><strong>{{ p.prix|floatformat:3|default:"-" }}</strong></td>
+                                <td>{{ p.prix_avant|floatformat:3|default:"-" }}</td>
+                                <td>{{ p.remise|default:"-" }}</td>
+                                <td>{{ p.description|default:"-"|truncatechars:40 }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Aucun produit en base. Importez un catalogue pour commencer.</p>
+    {% endif %}
+</div>
+
+<script>
+    function toggleCatalogue(header) {
+        const body = header.nextElementSibling;
+        const icon = header.querySelector('.toggle-icon');
+        if (body.style.display === 'none') {
+            body.style.display = 'block';
+            icon.textContent = '▼';
+            icon.classList.remove('collapsed');
+        } else {
+            body.style.display = 'none';
+            icon.textContent = '▶';
+            icon.classList.add('collapsed');
+        }
+    }
+</script>
+</body>
+</html>
