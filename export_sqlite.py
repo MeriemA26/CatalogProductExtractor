@@ -34,14 +34,14 @@ for driver in drivers_to_try:
             f'DATABASE={database};'
             'Trusted_Connection=yes;'
         )
-        print(f"✅ Connecté avec: {driver}")
+        print(f"Connecté avec: {driver}")
         break
     except pyodbc.Error as e:
-        print(f"   ❌ {driver}: {e}")
+        print(f" {driver}: {e}")
         continue
 
 if sql_server_conn is None:
-    print("\n❌ Aucun driver ODBC trouvé.")
+    print("\n Aucun driver ODBC trouvé.")
     exit()
 
 sql_cursor = sql_server_conn.cursor()
@@ -50,19 +50,19 @@ sql_cursor = sql_server_conn.cursor()
 # TABLE 1: extraction_catalogueupload
 # ============================================================
 print("\n" + "="*50)
-print("📦 IMPORTATION DES CATALOGUES")
+print(" IMPORTATION DES CATALOGUES")
 print("="*50)
 
 # Supprimer l'ancienne table
 try:
     sql_cursor.execute("DROP TABLE IF EXISTS extraction_catalogueupload")
     sql_server_conn.commit()
-    print("✅ Ancienne table catalogue supprimée")
+    print("Ancienne table catalogue supprimée")
 except:
     pass
 
 # Créer la table
-print("📝 Création de la table extraction_catalogueupload...")
+print(" Création de la table extraction_catalogueupload...")
 sql_cursor.execute("""
     CREATE TABLE extraction_catalogueupload (
         id INT PRIMARY KEY,
@@ -75,16 +75,16 @@ sql_cursor.execute("""
     )
 """)
 sql_server_conn.commit()
-print("✅ Table catalogue créée")
+print(" Table catalogue créée")
 
 # Récupérer les données
-print("\n📦 Récupération des catalogues depuis SQLite...")
+print("\n Récupération des catalogues depuis SQLite...")
 sqlite_cursor.execute("SELECT * FROM extraction_catalogueupload")
 rows = sqlite_cursor.fetchall()
 print(f"   {len(rows)} catalogues trouvés")
 
 if len(rows) > 0:
-    print("📤 Importation des catalogues...")
+    print(" Importation des catalogues...")
     count = 0
     for row in rows:
         try:
@@ -117,30 +117,30 @@ if len(rows) > 0:
             ))
             count += 1
         except Exception as e:
-            print(f"❌ Erreur catalogue {row['id']}: {e}")
+            print(f" Erreur catalogue {row['id']}: {e}")
     
     sql_server_conn.commit()
-    print(f"✅ {count} catalogues importés avec succès")
+    print(f" {count} catalogues importés avec succès")
 else:
-    print("⚠️ Aucun catalogue à importer")
+    print(" Aucun catalogue à importer")
 
 # ============================================================
 # TABLE 2: extraction_product
 # ============================================================
 print("\n" + "="*50)
-print("📦 IMPORTATION DES PRODUITS")
+print(" IMPORTATION DES PRODUITS")
 print("="*50)
 
 # Supprimer l'ancienne table
 try:
     sql_cursor.execute("DROP TABLE IF EXISTS extraction_product")
     sql_server_conn.commit()
-    print("✅ Ancienne table produit supprimée")
+    print(" Ancienne table produit supprimée")
 except:
     pass
 
 # Créer la table
-print("📝 Création de la table extraction_product...")
+print(" Création de la table extraction_product...")
 sql_cursor.execute("""
     CREATE TABLE extraction_product (
         id INT PRIMARY KEY,
@@ -156,18 +156,18 @@ sql_cursor.execute("""
     )
 """)
 sql_server_conn.commit()
-print("✅ Table produit créée")
+print(" Table produit créée")
 
 # Récupérer les données
-print("\n📦 Récupération des produits depuis SQLite...")
+print("\n Récupération des produits depuis SQLite...")
 sqlite_cursor.execute("SELECT * FROM extraction_product")
 rows = sqlite_cursor.fetchall()
 print(f"   {len(rows)} produits trouvés")
 
 if len(rows) == 0:
-    print("⚠️ Aucun produit à importer")
+    print(" Aucun produit à importer")
 else:
-    print("📤 Importation des produits...")
+    print(" Importation des produits...")
     count_success = 0
     count_error = 0
 
@@ -209,30 +209,30 @@ else:
                 print(f"   {count_success} produits importés...")
         except Exception as e:
             count_error += 1
-            print(f"❌ Erreur produit {row['id']}: {e}")
+            print(f" Erreur produit {row['id']}: {e}")
 
     sql_server_conn.commit()
-    print(f"✅ {count_success} produits importés avec succès")
+    print(f" {count_success} produits importés avec succès")
     if count_error > 0:
-        print(f"⚠️ {count_error} erreurs rencontrées")
+        print(f" {count_error} erreurs rencontrées")
 
 # ============================================================
 # RÉSUMÉ FINAL
 # ============================================================
 print("\n" + "="*50)
-print("📊 RÉSUMÉ DES DONNÉES IMPORTÉES")
+print(" RÉSUMÉ DES DONNÉES IMPORTÉES")
 print("="*50)
 
 sql_cursor.execute("SELECT COUNT(*) FROM extraction_catalogueupload")
 total_catalogues = sql_cursor.fetchone()[0]
-print(f"   📚 Catalogues: {total_catalogues}")
+print(f"    Catalogues: {total_catalogues}")
 
 sql_cursor.execute("SELECT COUNT(*) FROM extraction_product")
 total_produits = sql_cursor.fetchone()[0]
-print(f"   📦 Produits: {total_produits}")
+print(f"    Produits: {total_produits}")
 
 # 8. Fermer les connexions
 sqlite_conn.close()
 sql_server_conn.close()
 
-print("\n🎉 Import terminé !")
+print("\n Import terminé !")
